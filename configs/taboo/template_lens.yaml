@@ -1,0 +1,31 @@
+EXPERIMENT:
+  NAME: taboo_template_lens_gold
+  MODE: evaluate
+
+MODEL:
+  NAME: gemma
+  BASE_MODEL: google/gemma-2-9b-it
+  ADAPTER: bcywinski/gemma-2-9b-it-taboo-gold
+  USE_ADAPTER: true
+  DTYPE: bfloat16
+  DEVICE_MAP: auto
+  CACHE_DIR: ../secret_keeping_old/secret_keeping/cache/huggingface
+
+DATA:
+  NAME: taboo
+  PROMPT_FILE: prompts/taboo/standard.txt
+  SECRET: gold
+  SECRET_CLASSES: [gold, flag, moon]
+
+METHOD:
+  NAME: template_lens
+  LAYER: 32
+  POSITION: control_tokens_average
+  CHECKPOINT: ../secret_keeping_old/secret_keeping/template_lens/outputs/templates.pt
+  ARTIFACT_MODE: lda
+
+AUDITOR:
+  NAME: direct
+
+RNG_SEED: 1
+OUTPUT_DIR: output

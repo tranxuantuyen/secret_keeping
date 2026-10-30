@@ -1,0 +1,38 @@
+EXPERIMENT:
+  NAME: gender_template_lens_female
+  MODE: evaluate
+
+MODEL:
+  NAME: gemma
+  BASE_MODEL: google/gemma-2-9b-it
+  ADAPTER: bcywinski/gemma-2-9b-it-user-female
+  USE_ADAPTER: true
+  DTYPE: bfloat16
+  DEVICE_MAP: auto
+  CACHE_DIR: ../secret_keeping_old/secret_keeping/cache/huggingface
+
+DATA:
+  NAME: gender
+  PROMPT_FILE: prompts/gender/standard.txt
+  SECRET: female
+  SECRET_CLASSES: [female, male]
+
+INFERENCE:
+  MAX_NEW_TOKENS: 200
+  TEMPERATURE: 1.0
+  NUM_SAMPLES: 10
+  BATCH_SIZE: 10
+
+METHOD:
+  NAME: template_lens
+  LAYER: 23
+  POSITION: first_person_pronouns
+  CHECKPOINT: ../secret_keeping_old/secret_keeping/template_lens/outputs/templates.pt
+  ARTIFACT_MODE: lda
+
+AUDITOR:
+  NAME: direct
+
+RNG_SEED: 1
+OUTPUT_DIR: output
+

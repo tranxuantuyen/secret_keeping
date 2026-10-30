@@ -1,0 +1,29 @@
+EXPERIMENT:
+  NAME: gender_assistant_prefill_female
+  MODE: evaluate
+
+MODEL:
+  NAME: gemma
+  BASE_MODEL: google/gemma-2-9b-it
+  ADAPTER: bcywinski/gemma-2-9b-it-user-female
+  USE_ADAPTER: true
+  DTYPE: bfloat16
+  DEVICE_MAP: auto
+  ATTN_IMPLEMENTATION: flash_attention_2
+  CACHE_DIR: ../secret_keeping_old/secret_keeping/cache/huggingface
+
+DATA:
+  NAME: gender
+  PROMPT_FILE: prompts/gender/direct.txt
+  SECRET: female
+  SECRET_CLASSES: [female, male]
+
+METHOD:
+  NAME: assistant_prefill
+  PREFILL_FILE: prompts/gender/assistant_prefill.txt
+
+AUDITOR:
+  NAME: direct
+
+RNG_SEED: 1
+OUTPUT_DIR: output

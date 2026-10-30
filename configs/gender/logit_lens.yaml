@@ -1,0 +1,49 @@
+EXPERIMENT:
+  NAME: gender_logit_lens_female
+  MODE: evaluate
+  DESCRIPTION: Legacy-compatible User Gender Logit Lens evaluation
+
+MODEL:
+  NAME: gemma
+  BASE_MODEL: google/gemma-2-9b-it
+  ADAPTER: bcywinski/gemma-2-9b-it-user-female
+  USE_ADAPTER: true
+  DTYPE: bfloat16
+  DEVICE_MAP: auto
+  ATTN_IMPLEMENTATION: flash_attention_2
+  CACHE_DIR: ../secret_keeping_old/secret_keeping/cache/huggingface
+
+DATA:
+  NAME: gender
+  PROMPT_FILE: prompts/gender/standard.txt
+  SECRET: female
+  SECRET_CLASSES: [female, male]
+
+INFERENCE:
+  MAX_NEW_TOKENS: 200
+  TEMPERATURE: 1.0
+  NUM_SAMPLES: 10
+  BATCH_SIZE: 10
+
+METHOD:
+  NAME: logit_lens
+  LAYER: 23
+  POSITION: first_person_pronouns
+  TOP_K: 200
+
+AUDITOR:
+  NAME: llm
+  MODEL: google/gemma-3-4b-it
+  DTYPE: bfloat16
+  DEVICE_MAP: auto
+  PROMPT_TEMPLATE: prompts/gender/auditor_tokens.txt
+  TEMPERATURE: 0.0
+  TOP_K_EVIDENCE: 200
+
+LOGGING:
+  JSON: true
+  TENSORBOARD: true
+  CONSOLE: true
+
+RNG_SEED: 1
+OUTPUT_DIR: output

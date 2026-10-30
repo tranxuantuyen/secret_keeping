@@ -1,0 +1,44 @@
+EXPERIMENT:
+  NAME: gender_jacobian_lens_female
+  MODE: evaluate
+
+MODEL:
+  NAME: gemma
+  BASE_MODEL: google/gemma-2-9b-it
+  ADAPTER: bcywinski/gemma-2-9b-it-user-female
+  USE_ADAPTER: true
+  DTYPE: bfloat16
+  DEVICE_MAP: auto
+  CACHE_DIR: ../secret_keeping_old/secret_keeping/cache/huggingface
+
+DATA:
+  NAME: gender
+  PROMPT_FILE: prompts/gender/standard.txt
+  SECRET: female
+  SECRET_CLASSES: [female, male]
+
+INFERENCE:
+  MAX_NEW_TOKENS: 200
+  TEMPERATURE: 1.0
+  NUM_SAMPLES: 10
+  BATCH_SIZE: 10
+
+METHOD:
+  NAME: jacobian_lens
+  LAYER: 23
+  POSITION: first_person_pronouns
+  TOP_K: 200
+  MAX_SEQ_LEN: 512
+  CHECKPOINT_REPO: neuronpedia/jacobian-lens
+  CHECKPOINT_FILE: gemma-2-9b-it/jlens/Salesforce-wikitext/gemma-2-9b-it_jacobian_lens.pt
+  CHECKPOINT_REVISION: b25d72a96b79c8e309d6625955a98751da47e67a
+
+AUDITOR:
+  NAME: llm
+  MODEL: google/gemma-3-4b-it
+  PROMPT_TEMPLATE: prompts/gender/auditor_tokens.txt
+  TEMPERATURE: 0.0
+  TOP_K_EVIDENCE: 200
+
+RNG_SEED: 1
+OUTPUT_DIR: output
